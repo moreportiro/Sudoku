@@ -6,6 +6,7 @@ export interface Cell {
   col: number;
   value: CellValue;
   isEditable: boolean;
+  isInvalid?: boolean;
 }
 
 // двумерный массив доски 9х9

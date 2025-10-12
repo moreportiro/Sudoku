@@ -60,6 +60,38 @@ const isSafe = (
   return true;
 };
 
+export const validateBoard = (board: Board): Board => {
+  const newBoard = board.map((row) =>
+    row.map((cell) => ({ ...cell, isInvalid: false }))
+  );
+
+  // числовое представление доски для удобной проверки с помощью isSafe
+  const grid: number[][] = newBoard.map((row) =>
+    row.map((cell) => cell.value ?? 0)
+  );
+
+  // проходит по каждой ячейке
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      const cell = newBoard[i][j];
+      // проверяет только заполненные пользователем ячейки
+      if (cell.isEditable && cell.value !== null) {
+        const num = cell.value;
+        // временно убирает число из сетки, чтобы проверить его на фоне остальных
+        grid[i][j] = 0;
+        if (!isSafe(grid, i, j, num)) {
+          // Если число неправильное, помечаем ячейку как невалидную
+          newBoard[i][j].isInvalid = true;
+        }
+        // возвращает число обратно в сетку для следующих проверок
+        grid[i][j] = num;
+      }
+    }
+  }
+
+  return newBoard;
+};
+
 // алгоритм backtracking для заполнения доски
 const fillGrid = (grid: number[][]): boolean => {
   for (let i = 0; i < 9; i++) {
