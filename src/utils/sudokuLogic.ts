@@ -135,7 +135,7 @@ export const generateSudoku = (difficulty: number = 40): Board => {
         row: i,
         col: j,
         value: solvedGrid[i][j] as CellValue,
-        isEditable: false, // изначально все ячейки "заблокированы"
+        isEditable: false, // изначально все ячейки заблокированы
       });
     }
     puzzleBoard.push(row);

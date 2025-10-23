@@ -26,7 +26,7 @@ export function Board({ board, selectedCell, onCellClick }: BoardProps) {
             <Cell
               key={`${rowIndex}-${colIndex}`}
               cell={cell}
-              isSelected={isSelected} // Теперь эта переменная существует, и ошибки не будет.
+              isSelected={isSelected}
               onCellClick={onCellClick}
             />
           );

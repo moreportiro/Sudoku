@@ -49,8 +49,36 @@ export default function App() {
   useEffect(() => {
     if (isGameWon) {
       alert("Поздравляем! Вы решили головоломку!");
+      saveGameWin();
     }
   }, [isGameWon]);
+
+  // отправляет данные на API-сервер
+  const saveGameWin = async () => {
+    const gameData = {
+      playerName: "User",
+      solvedAt: new Date().toISOString(),
+    };
+
+    try {
+      // POST-запрос на API-сервер
+      const response = await fetch("/api/save-win", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gameData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка сервера: ${response.statusText}`);
+      }
+
+      console.log("Победа успешно сохранена!");
+    } catch (error) {
+      console.error("Не удалось сохранить результат:", error);
+    }
+  };
 
   // обновляет значение в конкретной ячейке
   const updateCellValue = (row: number, col: number, value: CellValue) => {
@@ -72,7 +100,10 @@ export default function App() {
     const hasErrors = currentBoard.flat().some((cell) => cell.isInvalid);
 
     if (isComplete && !hasErrors) {
-      setIsGameWon(true);
+      // чтобы избежать повторной отправки данных
+      if (!isGameWon) {
+        setIsGameWon(true);
+      }
     }
   };
 
@@ -86,7 +117,7 @@ export default function App() {
 
   // обработчик для кнопки "Новая игра"
   const handleNewGame = () => {
-    setBoard(generateSudoku(40)); // генерирует новую доску
+    setBoard(generateSudoku(1)); // генерирует новую доску
     setSelectedCell(null); // сбрасывает выделение
     setIsGameWon(false); // сбрасывает флаг победы
   };
