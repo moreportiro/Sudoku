@@ -42,6 +42,78 @@
 							<Handler>СохранитьПобеду</Handler>
 						</Properties>
 					</Method>
+					<Method uuid="4099389e-1532-4e77-b98d-9d16e9647692">
+						<Properties>
+							<Name>GET</Name>
+							<Synonym>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>GET</v8:content>
+								</v8:item>
+							</Synonym>
+							<Comment/>
+							<HTTPMethod>GET</HTTPMethod>
+							<Handler>ПолучитьПобедыПользователя</Handler>
+						</Properties>
+					</Method>
+				</ChildObjects>
+			</URLTemplate>
+			<URLTemplate uuid="136138a8-41b4-4de5-ac80-877162af06b5">
+				<Properties>
+					<Name>Пользователи</Name>
+					<Synonym>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Пользователи</v8:content>
+						</v8:item>
+					</Synonym>
+					<Comment/>
+					<Template>/users</Template>
+				</Properties>
+				<ChildObjects>
+					<Method uuid="a6c35dd3-e0ec-431d-8f60-18989626c60b">
+						<Properties>
+							<Name>POST</Name>
+							<Synonym>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>POST</v8:content>
+								</v8:item>
+							</Synonym>
+							<Comment/>
+							<HTTPMethod>POST</HTTPMethod>
+							<Handler>СоздатьПользователя</Handler>
+						</Properties>
+					</Method>
+				</ChildObjects>
+			</URLTemplate>
+			<URLTemplate uuid="afd09856-79f5-4ef1-bf02-9c0a27467c5d">
+				<Properties>
+					<Name>ДанныеПользователя</Name>
+					<Synonym>
+						<v8:item>
+							<v8:lang>ru</v8:lang>
+							<v8:content>Данные пользователя</v8:content>
+						</v8:item>
+					</Synonym>
+					<Comment/>
+					<Template>/users/{username}</Template>
+				</Properties>
+				<ChildObjects>
+					<Method uuid="3ceb1972-c023-4e6e-8e7a-cb89ae07fe5e">
+						<Properties>
+							<Name>GET</Name>
+							<Synonym>
+								<v8:item>
+									<v8:lang>ru</v8:lang>
+									<v8:content>GET</v8:content>
+								</v8:item>
+							</Synonym>
+							<Comment/>
+							<HTTPMethod>GET</HTTPMethod>
+							<Handler>ПолучитьДанныеПользователя</Handler>
+						</Properties>
+					</Method>
 				</ChildObjects>
 			</URLTemplate>
 		</ChildObjects>

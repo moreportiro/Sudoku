@@ -246,6 +246,7 @@
 		<ChildObjects>
 			<Language>Русский</Language>
 			<HTTPService>sudoku</HTTPService>
+			<Catalog>ПользователиИгры</Catalog>
 			<Document>ПобедаВСудоку</Document>
 		</ChildObjects>
 	</Configuration>
