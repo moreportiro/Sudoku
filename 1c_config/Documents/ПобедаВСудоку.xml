@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MetaDataObject xmlns="http://v8.1c.ru/8.3/MDClasses" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:cmi="http://v8.1c.ru/8.2/managed-application/cmi" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xen="http://v8.1c.ru/8.3/xcf/enums" xmlns:xpr="http://v8.1c.ru/8.3/xcf/predef" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.20">
-	<Document uuid="2c56bb2e-794c-43a7-99f8-8c78028a3aeb">
+	<Document uuid="c4a3b87f-6269-4efe-aecf-3c40f0e58438">
 		<InternalInfo>
 			<xr:GeneratedType name="DocumentObject.ПобедаВСудоку" category="Object">
-				<xr:TypeId>7f1c07ec-9173-4bde-a2c8-bfd6f2deacc6</xr:TypeId>
-				<xr:ValueId>8a4be18e-998e-46ae-8cd1-0bb51f7fda15</xr:ValueId>
+				<xr:TypeId>92b8ae46-fbdf-42d8-983d-f8f048619a59</xr:TypeId>
+				<xr:ValueId>d3c25067-1926-464c-8742-f6ef801dc0e9</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="DocumentRef.ПобедаВСудоку" category="Ref">
-				<xr:TypeId>3d2f1f2c-6927-4bb4-b3a4-3ff7cfa7566b</xr:TypeId>
-				<xr:ValueId>565339ce-63d3-4049-ac6b-7c88ccc8000d</xr:ValueId>
+				<xr:TypeId>cb445768-5bf6-4ace-b94a-3cc81e9aac42</xr:TypeId>
+				<xr:ValueId>90e3dc47-754a-4a6b-a88f-05e1c2b6acd8</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="DocumentSelection.ПобедаВСудоку" category="Selection">
-				<xr:TypeId>15f39494-cb1e-4c49-a571-4a5b55c11cf4</xr:TypeId>
-				<xr:ValueId>2b6d6d65-36a5-441d-9496-ea1160836f04</xr:ValueId>
+				<xr:TypeId>3a296e27-6c29-4462-b713-a8db4284be44</xr:TypeId>
+				<xr:ValueId>13d4f06e-d91b-4a4e-8542-b59a5535ac06</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="DocumentList.ПобедаВСудоку" category="List">
-				<xr:TypeId>a2b7c171-39c5-42c7-9391-1b3b3c565297</xr:TypeId>
-				<xr:ValueId>98a72420-4a42-4020-9eb2-576ca3d7fae6</xr:ValueId>
+				<xr:TypeId>4f351d1f-150e-4372-ba9c-78359d3318d1</xr:TypeId>
+				<xr:ValueId>992a3118-f43a-4411-a670-87deecd5e716</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="DocumentManager.ПобедаВСудоку" category="Manager">
-				<xr:TypeId>ae89cc46-c01d-4246-933c-3a95244f922d</xr:TypeId>
-				<xr:ValueId>1a78287f-acc0-40aa-96ac-a61c81b00cfa</xr:ValueId>
+				<xr:TypeId>d236ccff-0666-4d9b-9938-f74fd98a7ba1</xr:TypeId>
+				<xr:ValueId>ed0c627c-168e-4386-b98c-e60df2bb93d6</xr:ValueId>
 			</xr:GeneratedType>
 		</InternalInfo>
 		<Properties>
@@ -78,7 +78,7 @@
 			<ExecuteAfterWriteDataHistoryVersionProcessing>false</ExecuteAfterWriteDataHistoryVersionProcessing>
 		</Properties>
 		<ChildObjects>
-			<Attribute uuid="52c548fd-687e-44c6-95f5-078f81afcd04">
+			<Attribute uuid="26cc4522-bcb9-482c-920f-a341a9d02b0a">
 				<Properties>
 					<Name>ИмяИгрока</Name>
 					<Synonym>
@@ -89,11 +89,7 @@
 					</Synonym>
 					<Comment/>
 					<Type>
-						<v8:Type>xs:string</v8:Type>
-						<v8:StringQualifiers>
-							<v8:Length>100</v8:Length>
-							<v8:AllowedLength>Variable</v8:AllowedLength>
-						</v8:StringQualifiers>
+						<v8:Type>cfg:CatalogRef.ПользователиИгры</v8:Type>
 					</Type>
 					<PasswordMode>false</PasswordMode>
 					<Format/>
@@ -106,7 +102,7 @@
 					<MinValue xsi:nil="true"/>
 					<MaxValue xsi:nil="true"/>
 					<FillFromFillingValue>false</FillFromFillingValue>
-					<FillValue xsi:type="xs:string"/>
+					<FillValue xsi:nil="true"/>
 					<FillChecking>DontCheck</FillChecking>
 					<ChoiceFoldersAndItems>Items</ChoiceFoldersAndItems>
 					<ChoiceParameterLinks/>
@@ -121,7 +117,7 @@
 					<DataHistory>Use</DataHistory>
 				</Properties>
 			</Attribute>
-			<Attribute uuid="93eca3ea-e1e6-49f0-8681-b57f04a43eb9">
+			<Attribute uuid="51fc5f90-5e19-4e75-bf44-15365c44705b">
 				<Properties>
 					<Name>ДатаПобеды</Name>
 					<Synonym>

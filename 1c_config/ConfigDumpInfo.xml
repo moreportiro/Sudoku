@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ConfigDumpInfo xmlns="http://v8.1c.ru/8.3/xcf/dumpinfo" xmlns:xen="http://v8.1c.ru/8.3/xcf/enums" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" format="Hierarchical" version="2.20">
 	<ConfigVersions>
-		<Metadata name="Catalog.ПользователиИгры" id="3a701ac9-50e6-4409-b3a1-1061c5fa729b" configVersion="0049c1ebb66cec47a51edb3e00e3306300000000">
-			<Metadata name="Catalog.ПользователиИгры.Attribute.Логин" id="4b28308e-dca5-433c-8865-8a206b23d688"/>
-			<Metadata name="Catalog.ПользователиИгры.Attribute.ХэшПароля" id="5a27d11f-bb2d-4176-9b62-66aeec53da81"/>
+		<Metadata name="Catalog.ПользователиИгры" id="3865f8f0-36d4-4971-8843-6900222f50e0" configVersion="192a9abc2d04d641823d21ffb5c8fe7f00000000">
+			<Metadata name="Catalog.ПользователиИгры.Attribute.ХэшПароля" id="726737c6-e9ac-40cf-9537-de5a3900d02c"/>
+			<Metadata name="Catalog.ПользователиИгры.Attribute.Логин" id="7ef659d8-56b8-44f8-b0f2-03b1296525a2"/>
 		</Metadata>
-		<Metadata name="Configuration.Конфигурация" id="0b0cc9e0-fcc5-4037-b568-fae0fb314d65" configVersion="89966885b046cf45a5a9d3e66270c0d100000000"/>
-		<Metadata name="Document.ПобедаВСудоку" id="2c56bb2e-794c-43a7-99f8-8c78028a3aeb" configVersion="d146e02fb13ee14c97f9930e7e2482e300000000">
-			<Metadata name="Document.ПобедаВСудоку.Attribute.ИмяИгрока" id="52c548fd-687e-44c6-95f5-078f81afcd04"/>
-			<Metadata name="Document.ПобедаВСудоку.Attribute.ДатаПобеды" id="93eca3ea-e1e6-49f0-8681-b57f04a43eb9"/>
+		<Metadata name="Configuration.Конфигурация" id="97a6231e-af3f-48f1-ab3f-ce16e7e09820" configVersion="984a3e1f447fc642ab1416d3b95119e700000000"/>
+		<Metadata name="Document.ПобедаВСудоку" id="c4a3b87f-6269-4efe-aecf-3c40f0e58438" configVersion="bb5fe19846f60f4ab2f20fb3eb6f518900000000">
+			<Metadata name="Document.ПобедаВСудоку.Attribute.ИмяИгрока" id="26cc4522-bcb9-482c-920f-a341a9d02b0a"/>
+			<Metadata name="Document.ПобедаВСудоку.Attribute.ДатаПобеды" id="51fc5f90-5e19-4e75-bf44-15365c44705b"/>
 		</Metadata>
-		<Metadata name="HTTPService.sudoku" id="e38f902b-6d7b-467a-8205-eb08d47004fc" configVersion="dcf7d71eb52f7d41b1939738fb6504ab00000000">
-			<Metadata name="HTTPService.sudoku.URLTemplate.Пользователи" id="136138a8-41b4-4de5-ac80-877162af06b5"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.Победы" id="16f2f545-ca6e-4f7e-901c-66559095fc41"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.ДанныеПользователя.Method.GET" id="3ceb1972-c023-4e6e-8e7a-cb89ae07fe5e"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.Победы.Method.GET" id="4099389e-1532-4e77-b98d-9d16e9647692"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.Пользователи.Method.POST" id="a6c35dd3-e0ec-431d-8f60-18989626c60b"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.ДанныеПользователя" id="afd09856-79f5-4ef1-bf02-9c0a27467c5d"/>
-			<Metadata name="HTTPService.sudoku.URLTemplate.Победы.Method.POST" id="e4edd0a1-a257-4919-b7a7-308a60f0be8d"/>
+		<Metadata name="HTTPService.sudoku" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa" configVersion="922b11a765bfce40b0945753beebfc6c00000000">
+			<Metadata name="HTTPService.sudoku.URLTemplate.wins.Method.POST" id="025c6220-ed27-4a84-acfc-c84c58f94134"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.wins.Method.GET" id="1507d001-fdb8-4de4-9d9e-a060be5d9f2d"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.username.Method.GET" id="8b201dd2-cd2c-4667-8b46-f09d8180ea53"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.wins" id="8fef32c1-e900-4dc7-a24e-b95f27f96477"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.users" id="b3704a09-7bcf-4f53-b00c-16c363957e75"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.username" id="bc60b114-c170-4c0b-9a75-7ad567eadc3c"/>
+			<Metadata name="HTTPService.sudoku.URLTemplate.users.Method.POST" id="ed984546-b8c5-41ed-8c1e-adb138359716"/>
 		</Metadata>
-		<Metadata name="HTTPService.sudoku.Module" id="e38f902b-6d7b-467a-8205-eb08d47004fc.0" configVersion="cb69b80e28548d4194041cb23b9ff34d00000000"/>
-		<Metadata name="Language.Русский" id="2da350f3-9c5c-4315-8c85-0abb58671d03" configVersion="e4315a3836ac6749aff876d22d0be4ad00000000"/>
+		<Metadata name="HTTPService.sudoku.Module" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa.0" configVersion="91c635af8556ff4e995444502773bd9800000000"/>
+		<Metadata name="Language.Русский" id="6556bdd5-bcf7-470c-bcf0-8c26f444af39" configVersion="8967449781568b41b66797d5bd14aeba00000000"/>
 	</ConfigVersions>
 </ConfigDumpInfo>

@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MetaDataObject xmlns="http://v8.1c.ru/8.3/MDClasses" xmlns:app="http://v8.1c.ru/8.2/managed-application/core" xmlns:cfg="http://v8.1c.ru/8.1/data/enterprise/current-config" xmlns:cmi="http://v8.1c.ru/8.2/managed-application/cmi" xmlns:ent="http://v8.1c.ru/8.1/data/enterprise" xmlns:lf="http://v8.1c.ru/8.2/managed-application/logform" xmlns:style="http://v8.1c.ru/8.1/data/ui/style" xmlns:sys="http://v8.1c.ru/8.1/data/ui/fonts/system" xmlns:v8="http://v8.1c.ru/8.1/data/core" xmlns:v8ui="http://v8.1c.ru/8.1/data/ui" xmlns:web="http://v8.1c.ru/8.1/data/ui/colors/web" xmlns:win="http://v8.1c.ru/8.1/data/ui/colors/windows" xmlns:xen="http://v8.1c.ru/8.3/xcf/enums" xmlns:xpr="http://v8.1c.ru/8.3/xcf/predef" xmlns:xr="http://v8.1c.ru/8.3/xcf/readable" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.20">
-	<Catalog uuid="3a701ac9-50e6-4409-b3a1-1061c5fa729b">
+	<Catalog uuid="3865f8f0-36d4-4971-8843-6900222f50e0">
 		<InternalInfo>
 			<xr:GeneratedType name="CatalogObject.ПользователиИгры" category="Object">
-				<xr:TypeId>35e01675-addc-4370-8860-f45226d8de3c</xr:TypeId>
-				<xr:ValueId>1853bdf5-aa08-4b77-93e0-88e9816c0941</xr:ValueId>
+				<xr:TypeId>2b1fb4aa-1f55-4271-a0ca-b69329a8ccb2</xr:TypeId>
+				<xr:ValueId>50a08016-168b-4946-b33b-60ce6cd1d647</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="CatalogRef.ПользователиИгры" category="Ref">
-				<xr:TypeId>3b56aaa3-d478-4ebc-8485-b34c4caca8fe</xr:TypeId>
-				<xr:ValueId>10ec3e7a-50d0-4f1e-9f94-9824fc54e122</xr:ValueId>
+				<xr:TypeId>4e6e9d55-d68f-4b7d-8ed5-6e10efe8d01a</xr:TypeId>
+				<xr:ValueId>ec856190-2e62-4b82-9549-bbb21984af9b</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="CatalogSelection.ПользователиИгры" category="Selection">
-				<xr:TypeId>9ae40271-a1c1-4a07-bca7-5a279655a136</xr:TypeId>
-				<xr:ValueId>3ed0c5cb-2ea8-47f4-9432-3e67f0df45bd</xr:ValueId>
+				<xr:TypeId>45948639-5727-48d7-a127-69caf88ee69b</xr:TypeId>
+				<xr:ValueId>c6183435-0ebf-4c03-a2df-02331c14923c</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="CatalogList.ПользователиИгры" category="List">
-				<xr:TypeId>a0143274-6581-4cb5-86aa-5228f0fdc1d8</xr:TypeId>
-				<xr:ValueId>d22c0ed8-6c7a-4739-83a8-ed339c113f8e</xr:ValueId>
+				<xr:TypeId>a94568d3-01b0-4058-801f-6efcb0c9d98b</xr:TypeId>
+				<xr:ValueId>c8844f14-9c80-4405-9b25-a04df5a42049</xr:ValueId>
 			</xr:GeneratedType>
 			<xr:GeneratedType name="CatalogManager.ПользователиИгры" category="Manager">
-				<xr:TypeId>b533a059-d816-4781-bed6-1628136e3111</xr:TypeId>
-				<xr:ValueId>9f06be11-aec7-45b6-8d33-0ce418d0b648</xr:ValueId>
+				<xr:TypeId>944524ca-998a-40b3-8e47-5cae37164b71</xr:TypeId>
+				<xr:ValueId>68bf8696-9069-48dd-8a52-2392c39e7523</xr:ValueId>
 			</xr:GeneratedType>
 		</InternalInfo>
 		<Properties>
@@ -87,7 +87,7 @@
 			<ExecuteAfterWriteDataHistoryVersionProcessing>false</ExecuteAfterWriteDataHistoryVersionProcessing>
 		</Properties>
 		<ChildObjects>
-			<Attribute uuid="4b28308e-dca5-433c-8865-8a206b23d688">
+			<Attribute uuid="7ef659d8-56b8-44f8-b0f2-03b1296525a2">
 				<Properties>
 					<Name>Логин</Name>
 					<Synonym>
@@ -126,12 +126,12 @@
 					<LinkByType/>
 					<ChoiceHistoryOnInput>Auto</ChoiceHistoryOnInput>
 					<Use>ForItem</Use>
-					<Indexing>Index</Indexing>
+					<Indexing>DontIndex</Indexing>
 					<FullTextSearch>Use</FullTextSearch>
 					<DataHistory>Use</DataHistory>
 				</Properties>
 			</Attribute>
-			<Attribute uuid="5a27d11f-bb2d-4176-9b62-66aeec53da81">
+			<Attribute uuid="726737c6-e9ac-40cf-9537-de5a3900d02c">
 				<Properties>
 					<Name>ХэшПароля</Name>
 					<Synonym>
@@ -144,7 +144,7 @@
 					<Type>
 						<v8:Type>xs:string</v8:Type>
 						<v8:StringQualifiers>
-							<v8:Length>0</v8:Length>
+							<v8:Length>100</v8:Length>
 							<v8:AllowedLength>Variable</v8:AllowedLength>
 						</v8:StringQualifiers>
 					</Type>

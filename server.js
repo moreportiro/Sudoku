@@ -1,24 +1,23 @@
+// server.js
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 const app = express();
 const port = 3001;
 
-// надо придумать ключ
+// --- ВАЖНЫЕ КОНСТАНТЫ ---
+// В реальном проекте этот ключ нужно вынести в переменные окружения (.env файл)
 const SECRET_KEY = "your_super_secret_key_that_is_long_and_random";
-// путь к базе 1с
-const BASE_1C_URL = "http://localhost/sudoku_db/hs/sudoku";
+// URL вашей реальной публикации 1С
+const BASE_1C_URL = "http://localhost/Sudoku/hs/sudoku";
 
-// middleware, который будет выполняться для каждого входящего запроса
-// express.json() автоматически разбирает тело запроса, если оно в формате JSON и помещает результат в req.body
 app.use(express.json());
 
-// это имитирует то, как 1С будет хранить данные.
-const inMemoryWinsDatabase = {};
-// пример: { "user1": ["2025-10-23T10:00:00Z", "2025-10-23T11:00:00Z"], "user2": [...] }
+// --- ЭНДПОИНТЫ АВТОРИЗАЦИИ ---
 
-// регистрация
+// 1. Регистрация нового пользователя
 app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -27,177 +26,118 @@ app.post("/api/register", async (req, res) => {
       .json({ error: "Имя пользователя и пароль обязательны" });
   }
 
+  // Безопасно хешируем пароль перед отправкой в 1С
   const password_hash = await bcrypt.hash(password, 10);
 
-  // пока так
-  console.log(`Отправка в 1С для регистрации: POST ${BASE_1C_URL}/users`);
-  console.log(`Тело запроса:`, { username, password_hash });
-  res.status(201).json({ message: "Запрос на регистрацию отправлен" });
-
-  /* должно так
-    try {
-        const response1C = await fetch(`${BASE_1C_URL}/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password_hash }),
-        });
-
-        if (!response1C.ok) {
-            const errorData = await response1C.json();
-            throw new Error(errorData.error || `Ошибка 1С: ${response1C.statusText}`);
-        }
-
-        const dataFrom1C = await response1C.json();
-        res.status(201).json(dataFrom1C);
-
-    } catch (error) {
-        console.error('Ошибка при регистрации в 1С:', error);
-        res.status(500).json({ error: 'Не удалось связаться с сервером 1С' });
-    }
-    */
+  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
+  try {
+    const response1C = await axios.post(`${BASE_1C_URL}/users`, {
+      username,
+      password_hash,
+    });
+    res.status(201).json(response1C.data);
+  } catch (error) {
+    // Axios удобно кладет данные ошибки в error.response
+    const errorMessage =
+      error.response?.data?.error || "Ошибка на сервере 1С при регистрации";
+    const status = error.response?.status || 500;
+    res.status(status).json({ error: errorMessage });
+  }
 });
 
-// вход
+// 2. Вход пользователя
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
-  console.log(`Запрос данных из 1С: GET ${BASE_1C_URL}/users/${username}`);
+  try {
+    const response1C = await axios.get(`${BASE_1C_URL}/users/${username}`);
+    const userFrom1C = response1C.data;
 
-  const match = true; // для имитации всегда пароль верный
-  if (match) {
-    // для токена нужны ID и имя пользователя
-    const simulatedUser = { id: "guid-from-1c-simulated", username: username };
-    const token = jwt.sign(simulatedUser, SECRET_KEY, { expiresIn: "1h" });
-    res.json({ message: "Вход выполнен успешно (имитация)", token });
-  } else {
-    res
-      .status(401)
-      .json({ error: "Неверное имя пользователя или пароль (имитация)" });
-  }
-  /*
-    try {
-        // получает хэш пароля пользователя из 1С
-        const response1C = await fetch(`${BASE_1C_URL}/users/${username}`);
-        
-        if (!response1C.ok) {
-            // если 1С вернул 404 (не найдено), значит, пользователь не существует
-            return res.status(401).json({ error: 'Неверное имя пользователя или пароль' });
-        }
-
-        const userFrom1C = await response1C.json(); // { id, username, password_hash }
-
-        // сравнивает присланный пароль с хэшем из 1С
-        const match = await bcrypt.compare(password, userFrom1C.password_hash);
-
-        if (match) {
-            // если пароли совпали, создаем JWT токен
-            const payload = { id: userFrom1C.id, username: userFrom1C.username };
-            const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-            res.json({ message: 'Вход выполнен успешно', token });
-        } else {
-            res.status(401).json({ error: 'Неверное имя пользователя или пароль' });
-        }
-    } catch (error) {
-        console.error('Ошибка при входе через 1С:', error);
-        res.status(500).json({ error: 'Не удалось связаться с сервером 1С' });
+    if (!userFrom1C || !userFrom1C.password_hash) {
+      return res
+        .status(401)
+        .json({ error: "Неверное имя пользователя или пароль" });
     }
-    */
+
+    // Сравниваем пароль напрямую с хэшем из 1С
+    const match = await bcrypt.compare(password, userFrom1C.password_hash);
+
+    if (match) {
+      const payload = { id: userFrom1C.id, username: userFrom1C.username };
+      const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+      res.json({ message: "Вход выполнен успешно", token });
+    } else {
+      res.status(401).json({ error: "Неверное имя пользователя или пароль" });
+    }
+  } catch (error) {
+    const status = error.response?.status;
+    if (status === 404) {
+      console.warn(`[ВХОД] Пользователь не найден в 1С: ${username}`);
+      res.status(401).json({ error: "Неверное имя пользователя или пароль" });
+    } else {
+      console.error("[ВХОД] КРИТИЧЕСКАЯ ОШИБКА:", error.message);
+      const errorMessage =
+        error.response?.data?.error || "Ошибка на сервере 1С при входе";
+      res.status(status || 500).json({ error: errorMessage });
+    }
+  }
 });
 
-// проверка токена
+// --- MIDDLEWARE и ИГРОВЫЕ ЭНДПОИНТЫ ---
+
+// Middleware для проверки JWT токена
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) return res.sendStatus(401); // если токена нет
+  if (token == null) return res.sendStatus(401); // Ошибка, если токена нет
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403); // если токен неверный
-    req.user = user; // сохраняет данные пользователя в объекте запроса
-    next(); // передает управление следующему обработчику
+    if (err) return res.sendStatus(403); // Ошибка, если токен неверный
+    req.user = user; // Сохраняем данные пользователя в объекте запроса
+    next(); // Передаем управление следующему обработчику
   });
 };
 
-// сохрани победу пользователя
-app.post("/api/save-win", authenticateToken, (req, res) => {
+// 3. Сохранение победы (защищенный эндпоинт)
+app.post("/api/save-win", authenticateToken, async (req, res) => {
   const { solvedAt } = req.body;
+  // req.user был добавлен в middleware authenticateToken
   const user = req.user;
 
-  console.log(`Сохранение победы для пользователя: ${user.username}`);
-
-  // есть ли уже записи для этого пользователя
-  if (!inMemoryWinsDatabase[user.username]) {
-    inMemoryWinsDatabase[user.username] = [];
+  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
+  try {
+    const response1C = await axios.post(`${BASE_1C_URL}/wins`, {
+      playerName: user.username,
+      solvedAt,
+    });
+    res.status(200).json(response1C.data);
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.error || "Ошибка при сохранении победы в 1С";
+    res.status(error.response?.status || 500).json({ error: errorMessage });
   }
-  // добавляет новую победу в начало массива чтобы новые были сверху
-  inMemoryWinsDatabase[user.username].unshift(solvedAt);
-
-  console.log(
-    `Текущие победы для ${user.username}:`,
-    inMemoryWinsDatabase[user.username]
-  );
-  res.status(200).json({ message: "Результат успешно сохранен" });
-
-  /*
-    try {
-        const response1C = await fetch(`${BASE_1C_URL}/wins`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ playerName: user.username, solvedAt }),
-        });
-
-        if (!response1C.ok) {
-            const errorData = await response1C.json();
-            throw new Error(errorData.error || `Ошибка 1С: ${response1C.statusText}`);
-        }
-
-        const dataFrom1C = await response1C.json();
-        res.status(200).json(dataFrom1C);
-
-    } catch (error) {
-        console.error('Ошибка при сохранении победы в 1С:', error);
-        res.status(500).json({ error: 'Не удалось связаться с сервером 1С' });
-    }
-    */
 });
 
-// отдай список побед пользователя
+// 4. Получение списка побед (защищенный эндпоинт)
 app.get("/api/wins", authenticateToken, async (req, res) => {
+  // Получаем имя пользователя из проверенного токена
   const username = req.user.username;
 
-  console.log(`Запрос списка побед для пользователя: ${username}`);
-
-  const userWins = inMemoryWinsDatabase[username] || [];
-
-  console.log(`Отправка побед:`, userWins);
-  res.json(userWins);
-  /*
-    try {
-        const url = new URL(`${BASE_1C_URL}/wins`);
-        url.searchParams.append('username', username);
-
-        const response1C = await fetch(url.toString());
-
-        if (!response1C.ok) {
-            const errorData = await response1C.json();
-            throw new Error(errorData.error || `Ошибка 1С: ${response1C.statusText}`);
-        }
-
-        const winsFrom1C = await response1C.json();
-        res.status(200).json(winsFrom1C);
-
-    } catch (error) {
-        console.error('Ошибка при получении побед из 1С:', error);
-        res.status(500).json({ error: 'Не удалось связаться с сервером 1С' });
-    }
-    */
+  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
+  try {
+    const response1C = await axios.get(`${BASE_1C_URL}/wins`, {
+      params: { username }, // axios удобно передает GET-параметры
+    });
+    res.status(200).json(response1C.data);
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.error || "Ошибка при получении истории из 1С";
+    res.status(error.response?.status || 500).json({ error: errorMessage });
+  }
 });
 
-// запускает сервер и заставляет слушать входящие запросы на указанном порту
+// Запуск сервера
 app.listen(port, () => {
   console.log(`API шлюз для 1С запущен на http://localhost:${port}`);
 });
