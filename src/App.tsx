@@ -64,9 +64,12 @@ export default function App() {
 
   // сохрани победную игру
   const saveGameWin = async () => {
-    if (!auth?.token) return; // если пользователь не авторизован, не сохраняет
+    if (!auth?.token || !auth.user) return; // если пользователь не авторизован, не сохраняет
 
-    const gameData = { solvedAt: new Date().toISOString() };
+    const gameData = {
+      username: auth.user.username,
+      solvedAt: new Date().toISOString(),
+    };
 
     try {
       const response = await fetch("/api/save-win", {
@@ -130,15 +133,18 @@ export default function App() {
 
   // история побед
   const fetchWinsHistory = async () => {
-    if (!auth?.token) return;
+    if (!auth?.token || !auth.user) return;
 
     try {
-      const response = await fetch("/api/wins", {
-        headers: {
-          // отправляет токен, чтобы бэкенд знал, чьи победы запрашивать
-          Authorization: `Bearer ${auth.token}`,
-        },
-      });
+      const response = await fetch(
+        `/api/wins?username=${encodeURIComponent(auth.user.username)}`,
+        {
+          headers: {
+            // отправляет токен, чтобы бэкенд знал, чьи победы запрашивать
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Не удалось загрузить историю");

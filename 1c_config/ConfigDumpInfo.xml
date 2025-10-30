@@ -5,12 +5,12 @@
 			<Metadata name="Catalog.ПользователиИгры.Attribute.ХэшПароля" id="726737c6-e9ac-40cf-9537-de5a3900d02c"/>
 			<Metadata name="Catalog.ПользователиИгры.Attribute.Логин" id="7ef659d8-56b8-44f8-b0f2-03b1296525a2"/>
 		</Metadata>
-		<Metadata name="Configuration.Конфигурация" id="97a6231e-af3f-48f1-ab3f-ce16e7e09820" configVersion="984a3e1f447fc642ab1416d3b95119e700000000"/>
+		<Metadata name="Configuration.Конфигурация" id="97a6231e-af3f-48f1-ab3f-ce16e7e09820" configVersion="501d04ec58d16b4e8edbd87b0c1dd77400000000"/>
 		<Metadata name="Document.ПобедаВСудоку" id="c4a3b87f-6269-4efe-aecf-3c40f0e58438" configVersion="bb5fe19846f60f4ab2f20fb3eb6f518900000000">
 			<Metadata name="Document.ПобедаВСудоку.Attribute.ИмяИгрока" id="26cc4522-bcb9-482c-920f-a341a9d02b0a"/>
 			<Metadata name="Document.ПобедаВСудоку.Attribute.ДатаПобеды" id="51fc5f90-5e19-4e75-bf44-15365c44705b"/>
 		</Metadata>
-		<Metadata name="HTTPService.sudoku" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa" configVersion="922b11a765bfce40b0945753beebfc6c00000000">
+		<Metadata name="HTTPService.sudoku" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa" configVersion="679ea08f6265684397eea0ac240af5f600000000">
 			<Metadata name="HTTPService.sudoku.URLTemplate.wins.Method.POST" id="025c6220-ed27-4a84-acfc-c84c58f94134"/>
 			<Metadata name="HTTPService.sudoku.URLTemplate.wins.Method.GET" id="1507d001-fdb8-4de4-9d9e-a060be5d9f2d"/>
 			<Metadata name="HTTPService.sudoku.URLTemplate.username.Method.GET" id="8b201dd2-cd2c-4667-8b46-f09d8180ea53"/>
@@ -19,7 +19,7 @@
 			<Metadata name="HTTPService.sudoku.URLTemplate.username" id="bc60b114-c170-4c0b-9a75-7ad567eadc3c"/>
 			<Metadata name="HTTPService.sudoku.URLTemplate.users.Method.POST" id="ed984546-b8c5-41ed-8c1e-adb138359716"/>
 		</Metadata>
-		<Metadata name="HTTPService.sudoku.Module" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa.0" configVersion="91c635af8556ff4e995444502773bd9800000000"/>
+		<Metadata name="HTTPService.sudoku.Module" id="5a1f9277-99de-4056-b3fe-f8397bcb71fa.0" configVersion="0d867e5ea8384f49b5f90ec1151bab3200000000"/>
 		<Metadata name="Language.Русский" id="6556bdd5-bcf7-470c-bcf0-8c26f444af39" configVersion="8967449781568b41b66797d5bd14aeba00000000"/>
 	</ConfigVersions>
 </ConfigDumpInfo>

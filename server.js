@@ -104,11 +104,10 @@ app.post("/api/save-win", authenticateToken, async (req, res) => {
   const { solvedAt } = req.body;
   // req.user был добавлен в middleware authenticateToken
   const user = req.user;
-
   // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
   try {
     const response1C = await axios.post(`${BASE_1C_URL}/wins`, {
-      playerName: user.username,
+      username: user.username,
       solvedAt,
     });
     res.status(200).json(response1C.data);
