@@ -1,58 +1,37 @@
 import { useContext, useEffect, useState } from "react";
 import type { Board as BoardType, CellValue } from "./types/sudoku.types";
-import { generateSudoku, validateBoard } from "./utils/sudokuLogic";
+import {
+  generateSudoku,
+  getNumberCounts,
+  validateBoard,
+} from "./utils/sudokuLogic";
 import { Board } from "./components/Board";
 import { AuthContext } from "./context/AuthContext";
 import { Modal } from "./components/Modal";
 import { AuthForm } from "./components/AuthForm";
 import { GameHistory } from "./components/GameHistory";
+import { Numpad } from "./components/Numpad";
 
 // тип для координат выбранной ячейки
 type SelectedCell = { row: number; col: number } | null;
 
 export default function App() {
   // <BoardType> тип данных в котором будут храниться данные
-  const [board, setBoard] = useState<BoardType>(generateSudoku());
+  const [board, setBoard] = useState<BoardType>(generateSudoku(40));
   const [selectedCell, setSelectedCell] = useState<SelectedCell>(null);
   const [isGameWon, setIsGameWon] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [wins, setWins] = useState<string[]>([]);
-
+  const [counts, setCounts] = useState<Record<number, number>>(
+    getNumberCounts(board)
+  );
   const auth = useContext(AuthContext);
 
-  // глобальный слушатель нажатий клавиш
+  // Обновляет счетчики каждый раз, когда меняется доска
   useEffect(() => {
-    // каждый раз при нажатии на клавишу
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // если ни одна ячейка не выбрана, ничего не делает
-      if (!selectedCell || isGameWon) return;
-
-      const { row: r, col: c } = selectedCell;
-
-      // очистка ячейки
-      if (event.key === "Backspace" || event.key === "Delete") {
-        updateCellValue(r, c, null);
-        return;
-      }
-
-      // является ли нажатая клавиша цифрой от 1 до 9
-      const isDigit = /^[1-9]$/.test(event.key);
-      if (isDigit) {
-        // Преобразуем строку (event.key) в число.
-        const digit = parseInt(event.key) as CellValue;
-        updateCellValue(r, c, digit);
-      }
-    };
-
-    // слушатель к объекту window (на всю страницу).
-    window.addEventListener("keydown", handleKeyDown);
-
-    // при размонтировании компонента, чтобы избежать утечек памяти
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selectedCell, board, isGameWon]);
+    setCounts(getNumberCounts(board));
+  }, [board]);
 
   // для отображения сообщения о победе
   useEffect(() => {
@@ -94,13 +73,23 @@ export default function App() {
     // создает полную копию доски, чтобы не изменять состояние напрямую (это принцип React)
     const newBoard = board.map((rowArr) => rowArr.map((cell) => ({ ...cell })));
 
-    // обновляет значение только в нужной ячейке, если она редактируемая
+    // можно ли редактировать ячнйку
     if (newBoard[row][col].isEditable) {
       newBoard[row][col].value = value;
+
+      // валидация и проверка победы
       const validatedBoard = validateBoard(newBoard);
       setBoard(validatedBoard);
       checkWinCondition(validatedBoard);
     }
+  };
+
+  // Обработчик нажатия на кнопку Numpad
+  const handleNumberSelect = (num: CellValue) => {
+    // Если ячейка не выбрана или игра выиграна, ничего не делает
+    if (!selectedCell || isGameWon) return;
+
+    updateCellValue(selectedCell.row, selectedCell.col, num);
   };
 
   // функция для проверки условия победы
@@ -108,11 +97,8 @@ export default function App() {
     const isComplete = currentBoard.flat().every((cell) => cell.value !== null);
     const hasErrors = currentBoard.flat().some((cell) => cell.isInvalid);
 
-    if (isComplete && !hasErrors) {
-      // чтобы избежать повторной отправки данных
-      if (!isGameWon) {
-        setIsGameWon(true);
-      }
+    if (isComplete && !hasErrors && !isGameWon) {
+      setIsGameWon(true);
     }
   };
 
@@ -126,7 +112,8 @@ export default function App() {
 
   // обработчик для кнопки "Новая игра"
   const handleNewGame = () => {
-    setBoard(generateSudoku(1)); // генерирует новую доску
+    const newBoard = generateSudoku(40); // генерирует новую доску
+    setBoard(newBoard);
     setSelectedCell(null); // сбрасывает выделение
     setIsGameWon(false); // сбрасывает флаг победы
   };
@@ -161,6 +148,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-8">
+      {/* Шапка */}
       <header className="absolute top-4 right-4">
         {auth?.user ? (
           <div className="flex items-center gap-4">
@@ -190,17 +178,26 @@ export default function App() {
         )}
       </header>
       <h1 className="text-4xl font-bold mb-8">Судоку</h1>
+
+      {/* Кнопка Новая игра */}
       <button
         onClick={handleNewGame}
         className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
       >
         Новая игра
       </button>
+
+      {/* Доска */}
       <Board
         board={board}
         selectedCell={selectedCell}
         onCellClick={handleCellClick}
       />
+
+      {/* Кнопки */}
+      <Numpad onNumberSelect={handleNumberSelect} counts={counts} />
+
+      {/* Окно с победами */}
       <Modal
         isOpen={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}

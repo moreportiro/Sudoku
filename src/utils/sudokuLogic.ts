@@ -156,3 +156,24 @@ export const generateSudoku = (difficulty: number = 40): Board => {
 
   return puzzleBoard;
 };
+
+// Считает количество каждой цифры (1-9) на текущей доске
+export const getNumberCounts = (board: Board): Record<number, number> => {
+  const counts: Record<number, number> = {};
+
+  // Инициализирует счетчики нулями
+  for (let i = 1; i <= 9; i++) {
+    counts[i] = 0;
+  }
+
+  // Проходит по всей доске
+  board.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell.value !== null) {
+        counts[cell.value] = (counts[cell.value] || 0) + 1;
+      }
+    });
+  });
+
+  return counts;
+};
