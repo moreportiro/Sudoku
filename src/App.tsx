@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import type { Board as BoardType, CellValue } from "./types/sudoku.types";
+import type { Board as BoardType, CellValue, DifficultyLevel, WinRecord } from "./types/sudoku.types";
 import {
+  DIFFICULTY_LEVELS,
   generateSudoku,
   getNumberCounts,
   validateBoard,
@@ -11,18 +12,23 @@ import { Modal } from "./components/Modal";
 import { AuthForm } from "./components/AuthForm";
 import { GameHistory } from "./components/GameHistory";
 import { Numpad } from "./components/Numpad";
+import axios from "axios";
 
 // тип для координат выбранной ячейки
 type SelectedCell = { row: number; col: number } | null;
+// тип для состояния экрана
+type GameState = 'welcome' | 'difficulty_select' | 'playing';
 
 export default function App() {
+  const [gameState, setGameState] = useState<GameState>('welcome');
+  const [currentDifficulty, setCurrentDifficulty] = useState<DifficultyLevel>('Средне');
   // <BoardType> тип данных в котором будут храниться данные
-  const [board, setBoard] = useState<BoardType>(generateSudoku(40));
+  const [board, setBoard] = useState<BoardType>([]);
   const [selectedCell, setSelectedCell] = useState<SelectedCell>(null);
   const [isGameWon, setIsGameWon] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [wins, setWins] = useState<string[]>([]);
+  const [wins, setWins] = useState<WinRecord[]>([]);
   const [counts, setCounts] = useState<Record<number, number>>(
     getNumberCounts(board)
   );
@@ -36,33 +42,39 @@ export default function App() {
   // для отображения сообщения о победе
   useEffect(() => {
     if (isGameWon) {
-      alert("Поздравляем! Вы решили головоломку!");
+      alert(`Поздравляем! Вы прошли уровень "${currentDifficulty}"!`);
       saveGameWin();
     }
   }, [isGameWon]);
 
+  // Запуск выбора сложности
+  const handleStartGameClick = () => {
+    setGameState('difficulty_select');
+  };
+
+  // Старт самой игры
+  const startGame = (levelName: DifficultyLevel, holes: number) => {
+    setCurrentDifficulty(levelName);
+    const newBoard = generateSudoku(holes); // Передаем количество дырок
+    setBoard(newBoard);
+    setCounts(getNumberCounts(newBoard));
+    setSelectedCell(null);
+    setIsGameWon(false);
+    setGameState('playing');
+  };
+
   // сохрани победную игру
   const saveGameWin = async () => {
-    if (!auth?.token || !auth.user) return; // если пользователь не авторизован, не сохраняет
-
-    const gameData = {
-      username: auth.user.username,
-      solvedAt: new Date().toISOString(),
-    };
-
+    if (!auth?.token) return;
+    
     try {
-      const response = await fetch("/api/save-win", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`, // Добавляем токен
-        },
-        body: JSON.stringify(gameData),
+      await axios.post('/api/save-win', {
+        solvedAt: new Date().toISOString(),
+        difficulty: currentDifficulty // <-- Отправляем сложность
+      }, {
+        headers: { 'Authorization': `Bearer ${auth.token}` }
       });
-
-      if (!response.ok) throw new Error("Ошибка сохранения");
-
-      console.log("Победа успешно сохранена!");
+      console.log('Победа сохранена');
     } catch (error) {
       console.error(error);
     }
@@ -110,102 +122,141 @@ export default function App() {
     }
   };
 
-  // обработчик для кнопки "Новая игра"
-  const handleNewGame = () => {
-    const newBoard = generateSudoku(40); // генерирует новую доску
+  // обработчик для кнопки "Заново"
+  const handleRestartGame = () => {
+    // находит настройки для текущей сложности
+    const difficultyConfig = DIFFICULTY_LEVELS.find(level => level.name === currentDifficulty);
+    const holes = difficultyConfig ? difficultyConfig.holes : 40; // 40 как запасной вариант
+
+    // генерирует новую доску
+    const newBoard = generateSudoku(holes);
     setBoard(newBoard);
-    setSelectedCell(null); // сбрасывает выделение
-    setIsGameWon(false); // сбрасывает флаг победы
+    setCounts(getNumberCounts(newBoard));
+    setSelectedCell(null);
+    setIsGameWon(false);
+    // GameState менять не нужно, мы остаемся в 'playing'
   };
 
   // история побед
   const fetchWinsHistory = async () => {
-    if (!auth?.token || !auth.user) return;
-
+    if (!auth?.token) return;
     try {
-      const response = await fetch(
-        `/api/wins?username=${encodeURIComponent(auth.user.username)}`,
-        {
-          headers: {
-            // отправляет токен, чтобы бэкенд знал, чьи победы запрашивать
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Не удалось загрузить историю");
-      }
-
-      const data: string[] = await response.json();
-      setWins(data);
+      const response = await axios.get('/api/wins', {
+        headers: { 'Authorization': `Bearer ${auth.token}` }
+      });
+      setWins(response.data);
       setIsHistoryModalOpen(true);
     } catch (error) {
       console.error(error);
-      alert("Ошибка при загрузке истории побед.");
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-8">
-      {/* Шапка */}
-      <header className="absolute top-4 right-4">
-        {auth?.user ? (
-          <div className="flex items-center gap-4">
-            <span>
-              Привет, <strong>{auth.user.username}</strong>!
-            </span>
-            <button
-              onClick={fetchWinsHistory}
-              className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+const renderContent = () => {
+    switch (gameState) {
+      case 'welcome':
+        return (
+          <div className="flex flex-col items-center animate-fade-in">
+            <h1 className="text-6xl font-bold mb-8 text-blue-800">SUDOKU</h1>
+            <p className="text-xl text-gray-600 mb-12">Тренируй свой мозг каждый день</p>
+            <button 
+              onClick={handleStartGameClick}
+              className="px-8 py-4 bg-blue-600 text-white text-2xl rounded-full hover:bg-blue-700 transition transform hover:scale-105 shadow-lg"
             >
-              Мои победы
-            </button>
-            <button
-              onClick={auth.logout}
-              className="px-3 py-1 bg-red-500 text-white rounded"
-            >
-              Выйти
+              Новая игра
             </button>
           </div>
+        );
+
+      case 'difficulty_select':
+        return (
+          <div className="flex flex-col items-center animate-fade-in">
+            <h2 className="text-3xl font-bold mb-8 text-gray-700">Выберите сложность</h2>
+            <div className="flex flex-col gap-4 w-64">
+              {DIFFICULTY_LEVELS.map((level) => (
+                <button
+                  key={level.name}
+                  onClick={() => startGame(level.name, level.holes)}
+                  className="px-6 py-3 bg-white border-2 border-blue-500 text-blue-600 text-lg rounded-lg hover:bg-blue-500 hover:text-white transition font-semibold"
+                >
+                  {level.name}
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => setGameState('welcome')}
+              className="mt-8 text-gray-500 hover:text-gray-800 underline"
+            >
+              Назад
+            </button>
+          </div>
+        );
+
+      case 'playing':
+        return (
+          <div className="flex flex-col items-center w-full max-w-lg">
+            <div className="flex justify-between items-center w-full mb-4 px-2">
+              {/* Кнопка Меню */}
+               <button 
+                onClick={() => setGameState('difficulty_select')}
+                className="text-sm text-gray-600 hover:text-blue-600 flex items-center"
+              >
+                ← Меню
+              </button>
+              <div className="text-lg font-semibold text-gray-700">
+                Уровень: <span className="text-blue-600">{currentDifficulty}</span>
+              </div>
+              <div className="w-10"></div> {/* Заглушка для центровки */}
+            </div>
+            {/* Кнопка Заново */}
+              <button 
+                onClick={handleRestartGame}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                ↻ Заново
+              </button>
+
+            <Board
+              board={board}
+              selectedCell={selectedCell}
+              onCellClick={handleCellClick}
+            />
+            <Numpad 
+              onNumberSelect={handleNumberSelect} 
+              counts={counts} 
+            />
+          </div>
+        );
+    }
+  };
+
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-800">
+      {/* Хедер (Авторизация) всегда виден */}
+      <header className="absolute top-4 right-4 z-10">
+        {auth?.user ? (
+          <div className="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border">
+            <span className="font-medium text-blue-800">{auth.user.username}</span>
+            <button onClick={fetchWinsHistory} className="text-sm text-gray-600 hover:text-blue-600">🏆 Истори</button>
+            <button onClick={auth.logout} className="text-sm text-red-500 hover:text-red-700">Выйти</button>
+          </div>
         ) : (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 bg-green-500 text-white rounded"
-          >
+          <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-white text-blue-600 font-semibold rounded shadow hover:bg-blue-50">
             Войти / Регистрация
           </button>
         )}
       </header>
-      <h1 className="text-4xl font-bold mb-8">Судоку</h1>
 
-      {/* Кнопка Новая игра */}
-      <button
-        onClick={handleNewGame}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-      >
-        Новая игра
-      </button>
+      {/* Основной контент меняется в зависимости от состояния */}
+      {renderContent()}
 
-      {/* Доска */}
-      <Board
-        board={board}
-        selectedCell={selectedCell}
-        onCellClick={handleCellClick}
-      />
-
-      {/* Кнопки */}
-      <Numpad onNumberSelect={handleNumberSelect} counts={counts} />
-
-      {/* Окно с победами */}
-      <Modal
-        isOpen={isHistoryModalOpen}
-        onClose={() => setIsHistoryModalOpen(false)}
-      >
-        <GameHistory wins={wins} />
-      </Modal>
+      {/* Модалки */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <AuthForm onSuccess={() => setIsModalOpen(false)} />
+      </Modal>
+
+      <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)}>
+        <GameHistory wins={wins} />
       </Modal>
     </div>
   );

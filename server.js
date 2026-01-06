@@ -28,8 +28,6 @@ app.post("/api/register", async (req, res) => {
 
   // Безопасно хешируем пароль перед отправкой в 1С
   const password_hash = await bcrypt.hash(password, 10);
-
-  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
   try {
     const response1C = await axios.post(`${BASE_1C_URL}/users`, {
       username,
@@ -83,8 +81,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// --- MIDDLEWARE и ИГРОВЫЕ ЭНДПОИНТЫ ---
-
 // Middleware для проверки JWT токена
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -104,11 +100,11 @@ app.post("/api/save-win", authenticateToken, async (req, res) => {
   const { solvedAt } = req.body;
   // req.user был добавлен в middleware authenticateToken
   const user = req.user;
-  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
   try {
     const response1C = await axios.post(`${BASE_1C_URL}/wins`, {
       username: user.username,
       solvedAt,
+      difficulty: req.body.difficulty
     });
     res.status(200).json(response1C.data);
   } catch (error) {
@@ -122,8 +118,6 @@ app.post("/api/save-win", authenticateToken, async (req, res) => {
 app.get("/api/wins", authenticateToken, async (req, res) => {
   // Получаем имя пользователя из проверенного токена
   const username = req.user.username;
-
-  // --- РЕАЛЬНЫЙ ЗАПРОС К 1С с AXIOS ---
   try {
     const response1C = await axios.get(`${BASE_1C_URL}/wins`, {
       params: { username }, // axios удобно передает GET-параметры
