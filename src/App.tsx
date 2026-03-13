@@ -85,7 +85,7 @@ export default function App() {
     // создает полную копию доски, чтобы не изменять состояние напрямую (это принцип React)
     const newBoard = board.map((rowArr) => rowArr.map((cell) => ({ ...cell })));
 
-    // можно ли редактировать ячнйку
+    // можно ли редактировать ячейку
     if (newBoard[row][col].isEditable) {
       newBoard[row][col].value = value;
 
@@ -237,7 +237,7 @@ const renderContent = () => {
         {auth?.user ? (
           <div className="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border">
             <span className="font-medium text-blue-800">{auth.user.username}</span>
-            <button onClick={fetchWinsHistory} className="text-sm text-gray-600 hover:text-blue-600">🏆 Истори</button>
+            <button onClick={fetchWinsHistory} className="text-sm text-gray-600 hover:text-blue-600">🏆 История</button>
             <button onClick={auth.logout} className="text-sm text-red-500 hover:text-red-700">Выйти</button>
           </div>
         ) : (

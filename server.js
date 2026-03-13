@@ -8,9 +8,9 @@ const app = express();
 const port = 3001;
 
 // --- ВАЖНЫЕ КОНСТАНТЫ ---
-// В реальном проекте этот ключ нужно вынести в переменные окружения (.env файл)
+// (.env файл)
 const SECRET_KEY = "your_super_secret_key_that_is_long_and_random";
-// URL вашей реальной публикации 1С
+// URL  реальной публикации 1С
 const BASE_1C_URL = "http://localhost/Sudoku/hs/sudoku";
 
 app.use(express.json());
